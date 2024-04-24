@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-using System.Diagnostics;
-using System.Net;
+﻿using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
 using WebAPISample.Models;
@@ -33,6 +31,7 @@ namespace UBCP_WebAPISample.Middlewares
                 var headers = context.Request.Headers;
                 logModel.ApiReqHeader = SQL_Injection_Filter(string.Join(",", headers.Select(x => $"{x.Key}:{x.Value}")));
 
+                //如果使用反向代理，應確認取回正確的request ip
                 //string? ip = headers.ContainsKey(_options.RealHeaderIPKey) ?
                 //    IPAddress.Parse(headers[_options.RealHeaderIPKey].ToString().Split(',', StringSplitOptions.RemoveEmptyEntries)[0]).ToString()
                 //    : context.Connection.RemoteIpAddress?.ToString();

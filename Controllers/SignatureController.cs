@@ -1,16 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
-using System.Reflection;
-using System.Text.Json;
 using WebAPISample.Applications;
-using WebAPISample.Filters;
 using WebAPISample.Models;
-using WebAPISample.Services;
 
 namespace WebAPISample.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    [ApiVersion(1)]
+    [ApiVersion(2)]
     public class SignatureController : ControllerBase
     {
 
@@ -23,45 +21,24 @@ namespace WebAPISample.Controllers
             _logger = logger;
         }
         /// <summary>
-        /// Test(GET)
+        /// Test
         /// </summary>
         /// <returns></returns>
         [HttpGet("Test")]
         public IActionResult Test()
         {
-            _logger.LogInformation("中文字測試");
-            return Ok(_SignatureApp.Test());
+            return Ok("連線測試OK");
         }
 
         /// <summary>
-        /// 加密
+        /// 加簽
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        /// <remarks>
-        /// Sample request:
-        ///
-        ///     {
-        ///        "cSID": "A123456789",
-        ///        "cbirth": "19951023"
-        ///     }
-        /// </remarks>
         [HttpPost("Signature")]
         public IActionResult Signature(DATA request)
         {
             return Ok(_SignatureApp.Signature(request));
-        }
-
-        /// <summary>
-        /// 驗證
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        [HttpPost("Verify")]
-        [TypeFilter(typeof(MACValidationFilter))]
-        public IActionResult Verify(ApiModel<DATA> request)
-        {
-            return Ok(_SignatureApp.Verify(request));
         }
     }
 }

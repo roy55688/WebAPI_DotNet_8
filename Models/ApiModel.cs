@@ -13,7 +13,7 @@
         /// <example>A123456789</example>
         public string cSID { get; set; } = string.Empty;
 
-        /// <example>19951023</example>
+        /// <example>20240424</example>
         public string cbirth { get; set; } = string.Empty;
     }
 

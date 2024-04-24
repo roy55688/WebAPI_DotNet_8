@@ -1,5 +1,7 @@
 ﻿namespace WebAPISample.Services
 {
+
+    //Create ID for each request
     public interface IIDCreateService
     {
         string ID { get; }

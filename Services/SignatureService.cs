@@ -6,14 +6,18 @@ namespace WebAPISample.Services
     public interface ISignatureService
     {
         /// <summary>
-        /// MAC加密
+        /// MAC加密簽章
         /// </summary>
         /// <param name="LISTR_Content"></param>
         /// <returns></returns>
         string MACDataEncode(string LISTR_Content);
+
     }
     public class SignatureService : ISignatureService
     {
+        readonly string key = "APISAMPLEKEY這是API樣本在AES加密所使用的KEY";
+        readonly string IV = "這是API樣本在加密所使用的IV";
+
         public string MACDataEncode(string LISTR_Value)
         {
             return BASE64Encod(SHA256Encod(AES256Encod(LISTR_Value)));
@@ -23,25 +27,42 @@ namespace WebAPISample.Services
         {
             return Convert.ToBase64String(Encoding.ASCII.GetBytes(LISTR_Content));
         }
-        private string AES256Encod(string LISTR_Content)
+        public string AES256Encod(string LISTR_Content)
         {
-            byte[] bytes = Encoding.ASCII.GetBytes("APISAMPLEKEY這是API樣本在AES加密所使用的KEY");
-            var aesObject = Aes.Create();
-            aesObject.Mode = CipherMode.ECB;
-            aesObject.FeedbackSize = 8;
+            using Aes aesObject = Aes.Create();
+            aesObject.Mode = CipherMode.CBC;
             aesObject.KeySize = 256;
-            aesObject.Key = bytes;
+            aesObject.Padding = PaddingMode.PKCS7;
+            aesObject.Key = Encoding.ASCII.GetBytes(key);
+            aesObject.IV = Encoding.ASCII.GetBytes(IV);
+
             ICryptoTransform transform = aesObject.CreateEncryptor();
-            MemoryStream memoryStream = new MemoryStream();
-            CryptoStream cryptoStream = new CryptoStream(memoryStream, transform, CryptoStreamMode.Write);
-            StreamWriter streamWriter = new StreamWriter(cryptoStream);
-            streamWriter.Write(LISTR_Content);
-            streamWriter.Close();
-            cryptoStream.Close();
-            byte[] inArray = memoryStream.ToArray();
-            memoryStream.Close();
-            return Convert.ToBase64String(inArray);
+
+            byte[] plaintextBytes = Encoding.UTF8.GetBytes(LISTR_Content);
+
+            byte[] ciphertextBytes = transform.TransformFinalBlock(plaintextBytes, 0, plaintextBytes.Length);
+
+            return Convert.ToBase64String(ciphertextBytes);
         }
+
+        public string AES256Decod(string ciphertext)
+        {
+            using Aes aesObject = Aes.Create();
+            aesObject.Mode = CipherMode.CBC;
+            aesObject.KeySize = 256;
+            aesObject.Padding = PaddingMode.PKCS7;
+            aesObject.Key = Encoding.ASCII.GetBytes(key);
+            aesObject.IV = Encoding.ASCII.GetBytes(IV);
+
+            ICryptoTransform transform = aesObject.CreateDecryptor();
+
+            byte[] ciphertextBytes = Convert.FromBase64String(ciphertext);
+
+            byte[] plaintextBytes = transform.TransformFinalBlock(ciphertextBytes, 0, ciphertextBytes.Length);
+
+            return Encoding.UTF8.GetString(plaintextBytes);
+        }
+
         private string SHA256Encod(string LISTR_Content)
         {
             var shaObject = SHA256.Create();

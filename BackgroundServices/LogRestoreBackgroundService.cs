@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-
-namespace WebAPISample.BackgroundServices
+﻿namespace WebAPISample.BackgroundServices
 {
     public class LogRestoreBackgroundService : BackgroundService
     {

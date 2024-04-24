@@ -1,7 +1,4 @@
-﻿using System.Text.Encodings.Web;
-using System.Text.Json;
-using System.Text.Unicode;
-using WebAPISample.Models;
+﻿using WebAPISample.Models;
 
 namespace WebAPISample.Services
 {
@@ -15,7 +12,7 @@ namespace WebAPISample.Services
         /// </summary>
         /// <param name="info"></param>
         /// <returns></returns>
-        public string Success(object? info = null);
+        ResponseModel Success(object? info = null);
 
         /// <summary>
         /// 失敗 or 錯誤
@@ -23,7 +20,7 @@ namespace WebAPISample.Services
         /// <param name="rtnCode"></param>
         /// <param name="info"></param>
         /// <returns></returns>
-        string Fail(string rtnCode,object? info = null);
+        ResponseModel Fail(string rtnCode,object? info = null);
 
     }
 
@@ -43,7 +40,7 @@ namespace WebAPISample.Services
         /// </summary>
         /// <param name="info"></param>
         /// <returns></returns>
-        public string Success(object? info = null)
+        public ResponseModel Success(object? info = null)
         {
             ResponseModel responseModel = new ResponseModel();
 
@@ -53,12 +50,7 @@ namespace WebAPISample.Services
 
             responseModel.info = info ?? new object();
 
-            JsonSerializerOptions options = new()
-            {
-                Encoder = JavaScriptEncoder.Create(UnicodeRanges.All)
-            };
-
-            return JsonSerializer.Serialize(responseModel, options);
+            return responseModel;
         }
 
         /// <summary>
@@ -67,7 +59,7 @@ namespace WebAPISample.Services
         /// <param name="rtnCode"></param>
         /// <param name="info"></param>
         /// <returns></returns>
-        public string Fail(string rtnCode,object? info = null)
+        public ResponseModel Fail(string rtnCode,object? info = null)
         {
             ResponseModel responseModel = new ResponseModel();
 
@@ -77,12 +69,7 @@ namespace WebAPISample.Services
 
             responseModel.info = info ?? new object();
 
-            JsonSerializerOptions options = new()
-            {
-                Encoder = JavaScriptEncoder.Create(UnicodeRanges.All)
-            };
-
-            return JsonSerializer.Serialize(responseModel, options);
+            return responseModel;
         }
 
     }

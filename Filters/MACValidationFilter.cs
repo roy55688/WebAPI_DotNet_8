@@ -23,25 +23,41 @@ namespace WebAPISample.Filters
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
-            var request = context.ActionArguments["request"];
-            var data = request?.GetType().GetProperty("DATA")?.GetValue(request);
-            var mac = request?.GetType().GetProperty("MAC")?.GetValue(request);
-
-            if (mac != null && data != null)
+            try
             {
-                if (mac.ToString() != _Signature.MACDataEncode(JsonSerializer.Serialize(data)))
+                var request = context.ActionArguments["request"];
+                var data = request?.GetType().GetProperty("DATA")?.GetValue(request);
+                var mac = request?.GetType().GetProperty("MAC")?.GetValue(request);
+
+                if (mac == null)
                 {
-                    context.Result = new ObjectResult(_response.Fail("9999", "驗證失敗"));
+                    
+                    context.Result = new UnauthorizedObjectResult(_response.Fail("9995", "無訊息識別碼，請確認。"));
                     return;
                 }
+
+                if (data == null)
+                {
+                    context.Result = new UnauthorizedObjectResult(_response.Fail("9997", "資料內容為空。"));
+                    return;
+                }
+
+                if (mac.ToString() != _Signature.MACDataEncode(JsonSerializer.Serialize(data)))
+                {
+                    context.Result = new UnauthorizedObjectResult(_response.Fail("9998", "簽章錯誤")) { StatusCode= 403 };
+                    return;
+                }
+
+
             }
-            else
+            catch (Exception)
             {
-                context.Result = new ObjectResult(_response.Fail("9999", "驗證失敗"));
-                return;
+                context.Result = new UnauthorizedObjectResult(_response.Fail("9999", "驗證失敗"));
             }
+
         }
 
+        /// <inheritdoc/>
         public void OnActionExecuted(ActionExecutedContext context)
         {
         }

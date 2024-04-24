@@ -1,12 +1,10 @@
 using Serilog;
-using Serilog.Events;
 using System.Reflection;
 using WebAPISample.Applications;
 using WebAPISample.Services;
-using WebAPISample;
-using WebAPISample.Models;
 using UBCP_WebAPISample.Middlewares;
 using WebAPISample.BackgroundServices;
+using Asp.Versioning;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,20 +20,47 @@ Serilog.Debugging.SelfLog.Enable(msg =>
 try
 {
     // Add services to the container.
-    builder.Services.AddScoped<IIDCreateService, IDCreateService>();
     builder.Services.AddSingleton<ISignatureService, SignatureService>();
-    builder.Services.AddScoped<ISignatureApplication, SignatureApplication>();
+    builder.Services.AddSingleton<ICheckService, CheckService>();
+    builder.Services.AddScoped<IIDCreateService, IDCreateService>();
     builder.Services.AddScoped<IResponseService, ResponseService>();
 
+    // Add applications to the container.
+    builder.Services.AddScoped<IAccountApplication, AccountApplication>();
+    builder.Services.AddScoped<ISignatureApplication, SignatureApplication>();
+
+    // Add backgroundServices to the container.
     builder.Services.AddHostedService<LogRestoreBackgroundService>();
 
+    //Add Version
+    //Learn more : https://www.milanjovanovic.tech/blog/api-versioning-in-aspnetcore
+    builder.Services.AddApiVersioning(options =>
+    {
+        options.DefaultApiVersion = new ApiVersion(1);
+        options.ReportApiVersions = true;
+        options.AssumeDefaultVersionWhenUnspecified = true;
+        options.ApiVersionReader = ApiVersionReader.Combine(
+            new UrlSegmentApiVersionReader(),
+            new HeaderApiVersionReader("X-Api-Version"));
+    })
+        .AddApiExplorer(options =>
+    {
+        options.GroupNameFormat = "'v'V";
+        options.SubstituteApiVersionInUrl = true;
+    });
+
+
     builder.Services.AddControllers();
+
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
+
     builder.Services.AddSwaggerGen(options =>
     {
+        options.CustomSchemaIds(s => s.FullName?.Replace("+", "."));
         var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
         options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+
     });
 
     builder.Host.UseSerilog();
