@@ -35,6 +35,7 @@ try
     // Add backgroundServices to the container.
     builder.Services.AddHostedService<LogRestoreBackgroundService>();
 
+    //Add SwaggerOptions
     builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 
     //Add Version
@@ -78,6 +79,7 @@ try
         app.UseSwagger();
         app.UseSwaggerUI(options =>
         {
+            //增加不同版本的Describe
             var descriptions = app.DescribeApiVersions();
             foreach (var description in descriptions)
             {

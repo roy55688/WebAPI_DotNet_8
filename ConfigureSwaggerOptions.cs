@@ -5,6 +5,8 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace WebAPISample
 {
+
+    //ref : https://medium.com/@celery_liu/asp-net-core-web-api-with-swagger-api-versioning-for-dotnet-8-c8ce2fd7808c
     public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
     {
         private readonly IApiVersionDescriptionProvider _provider;
