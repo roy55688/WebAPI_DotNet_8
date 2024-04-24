@@ -10,7 +10,7 @@ using WebAPISample.Models;
 
 namespace WebAPISample.ControllersV1
 {
-    [Route("[controller]")]
+    [Route("v{v:apiVersion}/[controller]")]
     [ApiController]
     [ApiVersion(1)]
     public class AccountController : ControllerBase
@@ -37,7 +37,7 @@ namespace WebAPISample.ControllersV1
 
 namespace WebAPISample.ControllersV2
 {
-    [Route("[controller]")]
+    [Route("v{v:apiVersion}/[controller]")]
     [ApiController]
     [ApiVersion(2)]
     public class AccountController : ControllerBase

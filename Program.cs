@@ -5,6 +5,9 @@ using WebAPISample.Services;
 using UBCP_WebAPISample.Middlewares;
 using WebAPISample.BackgroundServices;
 using Asp.Versioning;
+using Microsoft.Extensions.Options;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using WebAPISample;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +34,8 @@ try
 
     // Add backgroundServices to the container.
     builder.Services.AddHostedService<LogRestoreBackgroundService>();
+
+    builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 
     //Add Version
     //Learn more : https://www.milanjovanovic.tech/blog/api-versioning-in-aspnetcore
@@ -71,7 +76,14 @@ try
     if (app.Environment.IsDevelopment())
     {
         app.UseSwagger();
-        app.UseSwaggerUI();
+        app.UseSwaggerUI(options =>
+        {
+            var descriptions = app.DescribeApiVersions();
+            foreach (var description in descriptions)
+            {
+                options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
+            }
+        });
     }
 
     app.UseMiddleware<LogMiddleware>();
