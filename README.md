@@ -1,8 +1,9 @@
 # API Template For DotNet8
-* ¥Î Middleware ¬ö¿ı¶i¥X¸ê®Æ¬yªºLog¡C
-* ¥Î ActionFilter °µ°T®§ÃÑ§O½XªºÅçÃÒ¡C
-* ±Nµ{¦¡¬yµ{±±¨î±q Controller ¿W¥ß¦Ü Application ¼h¡AÅı Controller ±M¤@³B²z¸ô¥Ñ¬ÛÃöÅŞ¿è¡C
-* «Ø¥ß BackgroundService ©ó©T©w®É¶¡ÀË¬d¨Ã¦^¼g Log¡C
+* ç”¨ Middleware ç´€éŒ„é€²å‡ºè³‡æ–™æµçš„Logã€‚
+* ç”¨ ActionFilter åšè¨Šæ¯è­˜åˆ¥ç¢¼çš„é©—è­‰ã€‚
+* å°‡ç¨‹å¼æµç¨‹æ§åˆ¶å¾ Controller ç¨ç«‹è‡³ Application å±¤ï¼Œè®“ Controller å°ˆä¸€è™•ç†è·¯ç”±ç›¸é—œé‚è¼¯ã€‚
+* å»ºç«‹ BackgroundService æ–¼å›ºå®šæ™‚é–“æª¢æŸ¥ä¸¦å›å¯« Logã€‚
+* å¯¦ä½œAPIç‰ˆæœ¬æ§åˆ¶ã€‚
 
 ## Development environment
 * Visual Stdio 2022
